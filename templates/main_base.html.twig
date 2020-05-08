@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}web-training{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <div align="right">
+            <h2>ようこそ、{{userName}}さん</h2>
+            <a href="/account/logout">ログアウトはこちら</a>
+        </div>
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+{% block body %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/create.css" type="text/css">
+<h1>アカウント作成ページ</h1>
+<form id="create" action="/account/verification" method="post">
+    <dl>
+        <dt><label for="username">ユーザ名</label></dt>
+        <dd><input type="text" id="username" name="username"></dd>
+    {% if message is defined %}
+    <div class="error">{{message}}</div>
+    {% endif %}
+        <dt><label for="password">パスワード</label></dt>
+        <dd><input type="password" id="password" name="passwd"></dd>
+        <dt><label for="password1">パスワード確認</label></dt>
+        <dd><input type="password" id="password1" name="passwd1"></dd>
+        <div>
+        <input type="submit" value="登録"/>
+        </div>
+    </dl>
+</form>
+
+<a href="/account/login">ログインはこちら</a>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src='/js/create.js'></script>
+{% endblock %}
+

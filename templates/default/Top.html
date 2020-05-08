@@ -1,0 +1,104 @@
+{% extends "main_base.html.twig" %}
+{% block body %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/top.css" type="text/css">
+<h1>ログ検索ページ</h1>
+<form action="/top/search" method="get">
+    <dl>
+        <dt><label for="api_name">API名</label></dt>
+        <dd><input type="text" id="api_name" name="api_name"></dd>
+        <dt><label for="protocol">プロトコル</label></dt>
+        <dd><input type="text" id="protocol" name="protocol"></dd>
+        <dt><label for="remote_ip">リモートIP</label></dt>
+        <dd><input type="text" id="remote_ip"  name="remote_ip"></dd>
+        <dt><label for="account_id">アカウントID</label></dt>
+        <dd><input type="text" id="account_id"  name="account_id"></dd>
+        <dt><label for="result_code">リザルトコード</label></dt>
+        <dd>
+            <input type="text" id="result_code"  name="result_code">
+            <input type="submit" value="検索">
+        </dd>
+        <input type="hidden" name=kensuDef value="{{kensuDef}}" >
+    </dl>
+</form>
+<div>
+    　表示件数
+    <a href="?&kensuDef=5">
+        <button class="btn btn-default" type="button" {% if kensuDef == 5%}disabled="disabled"{% endif %}>5件</button>
+    </a>
+    <a href="?&kensuDef=10">
+        <button class="btn btn-default" type="button" {% if kensuDef == 10%}disabled="disabled"{% endif %}>10件</button>
+    </a>
+    <a href="?&kensuDef=100">
+        <button class="btn btn-default" type="button" {% if kensuDef == 100 %}disabled="disabled"{% endif %}>100件</button><br>
+    </a>
+</div>
+<div id="syusei">
+    <p class="kensu">全{{kensu}}件中{{from}}件～{{to}}件表示しています</p>
+    <table border="1">
+        <tr>
+            <th class="col-md-2">API名</th>
+            <th class="col-md-1">プロトコル</th>
+            <th class="col-md-2">リモートIP</th>
+            <th class="col-md-1">アカウントID</th>
+            <th class="col-md-1">リザルトコード</th>
+            <th class="col-md-1">リザルトメッセージ</th>
+            <th class="col-md-4">メモ</th>
+        </tr>
+        {% if kensu > 0 %} {% for i,value in log %}
+        <tr>
+            <td>{{value.api_name}}</td>
+            <td>{{value.protocol}}</td>
+            <td>{{value.remote_ip}}</td>
+            <td>{{value.account_id}}</td>
+            <td>{{value.result_code}}</td>
+            <td>{{value.result_message}}</td>
+            <td>
+                {{value.memo}}
+                <input type="button" name="update" data-memo="{{value.memo}}" data-id="{{value.id}}" value="更新">
+            </td>
+        </tr>
+        <div class="modal js-modal">
+            <div class="modal__bg js-modal-close"></div>
+            <div class="modal__content" id="modal">
+                <textarea rows="5" cols="20" name="update_memo" value="{{value.memo}}"></textarea>
+                <input type="button" name="confirm" value="更新する">
+                <input type="button" name="cancel" class="js-modal-close" href="" value="キャンセル">
+            </div>
+        </div>
+        {% endfor %} {% endif %}
+    </table>
+
+    {% for i in range(1,total_page)%}
+    {% if i == now and now > 1 and now < total_page %}
+    <strong>
+        <a href="?page={{i}}&kensuDef={{kensuDef}}">{{i}}</a>
+    </strong>
+    {% elseif i == 1  and total_page > 0 and i == now %}
+    <strong>
+        <a href="?page=1&kensuDef={{kensuDef}}">最初のページ</a>
+    </strong>
+    {% elseif i == total_page and total_page > 0 and i == now %}
+    <strong>
+        <a href="?page={{total_page}}&kensuDef={{kensuDef}}">最後のページ</a>
+    </strong>
+    {% elseif i == 1  and total_page > 0 %}
+    <a href="?page=1&kensuDef={{kensuDef}}">最初のページ</a>
+    {% elseif i == total_page and total_page > 0 %}
+    <a href="?page={{total_page}}&kensuDef={{kensuDef}}">最後のページ</a>
+    {% elseif i == now - 1 and now > 1 and total_page > 0 %}
+    <a href="?page={{i}}&kensuDef={{kensuDef}}">前へ</a>
+    {% elseif i == now + 1 and total_page > 1 and total_page > 0 %}
+    <a href="?page={{i}}&kensuDef={{kensuDef}}">次へ</a>
+    {% endif %}
+    {% endfor %}
+    {% if total_page == 1 %}
+    <a href="#" id="invalid">最後のページ</a>
+    {% endif %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src='/js/top.js'></script>
+</div>
+{% endblock %}
+
+

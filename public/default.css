@@ -1,0 +1,5 @@
+@charset "utf-8";
+div {
+    color: #FF0000;			/* 見出しテキストの色を指定する */
+    font-size: smaller;
+}
