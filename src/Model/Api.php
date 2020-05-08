@@ -6,7 +6,7 @@ use App\Model\Db;
 
 class Api
 {
-    public function getUserData($pass,$pass2)
+    public function getUserData($pass, $pass2)
     {
         if (password_verify($pass, $pass2)) {
             return true;
@@ -20,42 +20,45 @@ class Api
         return $totalpages;
     }
 
-    public function from($total,$offset)
+    public function from($total, $offset)
     {
-        if($total === 0){
+        if ($total === 0) {
             $from = 0;
-        }else{
+        } else {
             $from = $offset + 1;
         }
         return $from;
     }
 
-    public function to($kensuDefault,$now_page,$total){
-        if($kensuDefault * $now_page > $total){
+    public function to($kensuDefault, $now_page, $total)
+    {
+        if ($kensuDefault * $now_page > $total) {
             $to = $total;
-        }else{
+        } else {
             $to = $kensuDefault * $now_page;
         }
         return $to;
     }
 
-    public function offset($kensuDefault,$now_page){
+    public function offset($kensuDefault, $now_page)
+    {
         $offset = $kensuDefault * ($now_page - 1);
         return $offset;
     }
 
-    public function result($kensuDefault,$now_page,$total,$offset){
+    public function result($kensuDefault, $now_page, $total, $offset)
+    {
         $db = new Db();
         $result = array();
 
-        if($kensuDefault * $now_page > $total){
+        if ($kensuDefault * $now_page > $total) {
             $lastkensu = $total - $offset;
-            $results = $db->select($lastkensu,$offset);
-         }else{
-            $results = $db->select($kensuDefault,$offset);
-         }
+            $results = $db->select($lastkensu, $offset);
+        } else {
+            $results = $db->select($kensuDefault, $offset);
+        }
 
-        foreach ($results as $key => $value){
+        foreach ($results as $key => $value) {
             $result[$key]['id'] = $value['id'];
             $result[$key]['api_name'] = $value['api_name'];
             $result[$key]['protocol'] = $value['protocol'];
@@ -68,18 +71,19 @@ class Api
         return $result;
     }
 
-    public function searchResult($kensuDefault,$now_page,$searchResultAll,$offset,$api_name, $protocol, $remote_ip, $account_id, $result_code){
+    public function searchResult($kensuDefault, $now_page, $searchResultAll, $offset, $api_name, $protocol, $remote_ip, $account_id, $result_code)
+    {
         $db = new Db();
         $result = array();
 
-        if($kensuDefault * $now_page > $searchResultAll){
+        if ($kensuDefault * $now_page > $searchResultAll) {
             $lastkensu = $searchResultAll - $offset;
             $results = $db->searchResult($kensuDefault, $offset, $api_name, $protocol, $remote_ip, $account_id, $result_code);
-        }else{
+        } else {
             $results = $db->searchResult($kensuDefault, $offset, $api_name, $protocol, $remote_ip, $account_id, $result_code);
         }
 
-        foreach ($results as $key => $value){
+        foreach ($results as $key => $value) {
             $result[$key]['id'] = $value['id'];
             $result[$key]['api_name'] = $value['api_name'];
             $result[$key]['protocol'] = $value['protocol'];

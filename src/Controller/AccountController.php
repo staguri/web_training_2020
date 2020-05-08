@@ -17,16 +17,17 @@ class AccountController extends AbstractController
     /**
      * @Route("/account/create", name="account_create" )
      */
-    public function createAccount(Request $request){
+    public function createAccount(Request $request)
+    {
         $userInfo = $request->query->get('userInfo');
-        return $this->render('account/create.html',
-        ['message' => $userInfo]);
+        return $this->render('account/create.html', ['message' => $userInfo]);
     }
 
     /**
      * @Route("/account/verification", name="verification" )
      */
-    public function verification(Request $request){
+    public function verification(Request $request)
+    {
         $db = new Db();
         $user = $request->request->get('username');
         $pass = $request->request->get('passwd');
@@ -36,7 +37,7 @@ class AccountController extends AbstractController
                 'userInfo' => "このユーザ名は既に使われています"
             ]);
         }
-        $db->createAcccount($user,$pass);
+        $db->createAcccount($user, $pass);
         $data = array(
             'user_name' => $user,
             'password' => $pass
@@ -47,7 +48,8 @@ class AccountController extends AbstractController
     /**
      * @Route("/ajax/account/login", name="ajax_login")
      */
-    public function authentication(Request $request){
+    public function authentication(Request $request)
+    {
         $session = New Session();
         $db = new Db();
         $api = new Api();
@@ -56,22 +58,22 @@ class AccountController extends AbstractController
         $pass = $request->request->get('pass');
         $token = $request->request->get('token');
         $userInfo = $db->getUserData($user);
-        $authentication = $api->getUserData($pass,$userInfo[0]['password']);
+        $authentication = $api->getUserData($pass, $userInfo[0]['password']);
 
-        if ($session->validate_token($token)){
-            if(!$authentication){
+        if ($session->validate_token($token)) {
+            if (!$authentication) {
                 http_response_code(403);
                 $data = array(
                     'message' => 'error'
                 );
-            }else{
+            } else {
                 session_regenerate_id(true);
                 $_SESSION['username'] = $user;
                 $data = array(
                     'message' => 'ok',
                 );
             }
-        }else{
+        } else {
             $data = array(
                 'message' => 'CSRFトークンエラー'
             );
@@ -85,7 +87,8 @@ class AccountController extends AbstractController
     /**
      * @Route("/account/login", name="login")
      */
-    public function login(){
+    public function login()
+    {
         $session = New Session();
         $session->require_unlogined_session();
         $_SESSION = array();
@@ -99,11 +102,12 @@ class AccountController extends AbstractController
     /**
      * @Route("/account/logout", name="logout")
      */
-    public function logout(){
+    public function logout()
+    {
         $session = New Session();
         $message = array(
-            'message' =>  $session->logout()
+            'message' => $session->logout()
         );
-        return $this->render('account/logout.html',$message);
+        return $this->render('account/logout.html', $message);
     }
 }

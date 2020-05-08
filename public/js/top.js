@@ -1,7 +1,7 @@
 $(function () {
     id = "";
     updateMemo = "";
-    $('input[name="update"]').on('click',function() {
+    $('input[name="update"]').on('click', function () {
         var memo = $(this).data('memo');
         id = $(this).data('id');
         $('textarea[name="update_memo"]').val(memo);
@@ -9,39 +9,40 @@ $(function () {
         updateMemo = memo;
     });
 
-    $('textarea[name="update_memo"]').on('input', function(event) {
+    $('textarea[name="update_memo"]').on('input', function (event) {
         updateMemo = $(this).val();
     });
 
-    $('input[name="confirm"]').on('click',function () {
-        if($('p').hasClass('error')){
+    $('input[name="confirm"]').on('click', function () {
+        if ($('p').hasClass('error')) {
             $('.error').remove();
         }
         var self = $(this);
-        var cancelButton  = $('input[name="cancel"]');
+        var cancelButton = $('input[name="cancel"]');
         self.val('更新中').prop('disabled', true);
         cancelButton.remove();
 
         param = {
-            'memo' : updateMemo,
-            'id' : id,
+            'memo': updateMemo,
+            'id': id,
         }
         $.ajax({
             url: '/ajax/memo', //アクセスするURL
             type: 'get',　　 //post or get
             cache: false,        //cacheを使うか使わないかを設定
-            dataType:'json',     //data type script・xmlDocument・jsonなど
-            data:param,           //アクセスするときに必要なデータを記載
+            dataType: 'json',     //data type script・xmlDocument・jsonなど
+            data: param,           //アクセスするときに必要なデータを記載
         })
-         .done(function(response) {
-             if(response['message'] =='ok'){
+         .done(function (response) {
+             if (response['message'] == 'ok') {
                  $('.js-modal').fadeOut();
                  location.reload(true);
-             }else if(response['message'] =='error'){
+             } else if (response['message'] == 'error') {
                  $('<p class="error">更新に失敗しました</p>').prependTo(self.parent());
                  self.val('更新する').prop('disabled', false);
-                 $('<input type="button" name="cancel" class="js-modal-close" href="" value="キャンセル">').appendTo(self.parent());
-                 $('.js-modal-close').on('click',function(){
+                 $('<input type="button" name="cancel" class="js-modal-close" href="" value="キャンセル">')
+                     .appendTo(self.parent());
+                 $('.js-modal-close').on('click', function () {
                      $('.js-modal').fadeOut();
                      return false;
                  });
@@ -49,33 +50,12 @@ $(function () {
          });
     });
 
-    $('.js-modal-close').on('click',function(){
+    $('.js-modal-close').on('click', function () {
         $('.js-modal').fadeOut();
         return false;
     });
 
-    $('#invalid').on('click', function(){
+    $('#invalid').on('click', function () {
         return false;
     });
-
-//     $('input:radio[name="example"]').change(function() {
-// //    console.log($('input:radio[name="example"]:checked').val());
-//         var kensu = $('input:radio[name="example"]:checked').val();
-//         var param = {
-//             'kensu' : kensu,
-//         };
-//
-//         $.ajax({
-//             url: '/top', //アクセスするURL
-//             type: 'get',　　 //post or get
-//             cache: false,        //cacheを使うか使わないかを設定
-//             dataType:'html',     //data type script・xmlDocument・jsonなど
-//             data:param,           //アクセスするときに必要なデータを記載
-//         })
-//          .done(function(data) {
-//              $('body').html(data);
-//
-//          })
-//     });
-
 });

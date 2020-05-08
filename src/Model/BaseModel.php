@@ -4,7 +4,8 @@ namespace App\Model;
 
 use App\Model\Pdomodel;
 
-class BaseModel{
+class BaseModel
+{
     function getRow($sql)
     {
         $PDO = new Pdomodel();
