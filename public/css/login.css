@@ -1,10 +1,11 @@
 @charset "utf-8";
-dl dt{
+dl dt {
     width: 165px;
-    padding:5px 0;
-    float:left;
-    clear:both;
+    padding: 5px 0;
+    float: left;
+    clear: both;
 }
-dl dd{
-    padding:5px 0;
+
+dl dd {
+    padding: 5px 0;
 }

@@ -15,23 +15,21 @@ class Db extends BaseModel
 
     public function searchResult($kensu, $offset, $api_name, $protocol, $remote_ip, $account_id, $result_code)
     {
-        $sql = sprintf(
-            'select * from log where api_name = case when "%s" != "" then "%s" else api_name end
+        $sql = sprintf('select * from log where api_name = case when "%s" != "" then "%s" else api_name end
                     and protocol = case when "%s" != "" then "%s" else protocol end
                     and remote_ip = case when "%s" != "" then "%s" else remote_ip end
                     and account_id = case when "%s" != "" then "%s" else account_id end
-                    and result_code = case when "%s" != "" then "%s" else result_code end limit %d offset %d',$api_name,$api_name,$protocol,$protocol,$remote_ip,$remote_ip,$account_id,$account_id,$result_code,$result_code,$kensu,$offset);
+                    and result_code = case when "%s" != "" then "%s" else result_code end limit %d offset %d', $api_name, $api_name, $protocol, $protocol, $remote_ip, $remote_ip, $account_id, $account_id, $result_code, $result_code, $kensu, $offset);
         return $this->getRow($sql);
     }
 
     public function searchColumn($api_name, $protocol, $remote_ip, $account_id, $result_code)
     {
-        $sql = sprintf(
-            'select count(*) from log where api_name = case when "%s" != "" then "%s" else api_name end
+        $sql = sprintf('select count(*) from log where api_name = case when "%s" != "" then "%s" else api_name end
                     and protocol = case when "%s" != "" then "%s" else protocol end
                     and remote_ip = case when "%s" != "" then "%s" else remote_ip end
                     and account_id = case when "%s" != "" then "%s" else account_id end
-                    and result_code = case when "%s" != "" then "%s" else result_code end',$api_name,$api_name,$protocol,$protocol,$remote_ip,$remote_ip,$account_id,$account_id,$result_code,$result_code);
+                    and result_code = case when "%s" != "" then "%s" else result_code end', $api_name, $api_name, $protocol, $protocol, $remote_ip, $remote_ip, $account_id, $account_id, $result_code, $result_code);
         return $this->getColumn($sql);
     }
 
@@ -60,9 +58,9 @@ class Db extends BaseModel
         return $this->getColumn($sql);
     }
 
-    public function updateMemo($id,$memo)
+    public function updateMemo($id, $memo)
     {
-        $sql = sprintf('update log set memo = "%s" where id = %d', $memo,$id);
+        $sql = sprintf('update log set memo = "%s" where id = %d', $memo, $id);
         return $this->execute($sql);
     }
 }

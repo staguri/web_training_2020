@@ -16,7 +16,8 @@ class DefaultController extends AbstractController
     /**
      * @Route("/top", name="top",methods="get")
      */
-    public function top(Request $request){
+    public function top(Request $request)
+    {
         $api = new Api();
         $db = new Db();
         $session = New Session;
@@ -29,22 +30,22 @@ class DefaultController extends AbstractController
         //全レコード数を取得
         $total = intval($db->column());
 
-        if(!is_null($kensuDef)){
+        if (!is_null($kensuDef)) {
             $kensuDefault = intval($kensuDef);
         }
-        if(!is_null($page)){
+        if (!is_null($page)) {
             $now_page = intval($page);
         }
 
-        $total_page = $api->paging($kensuDefault,$total);
-        $offset = $api->offset($kensuDefault,$now_page);
-        $from = $api->from($total,$offset);
-        $to = $api->to($kensuDefault,$now_page,$total);
-        $result = $api->result($kensuDefault,$now_page,$total,$offset);
+        $total_page = $api->paging($kensuDefault, $total);
+        $offset = $api->offset($kensuDefault, $now_page);
+        $from = $api->from($total, $offset);
+        $to = $api->to($kensuDefault, $now_page, $total);
+        $result = $api->result($kensuDefault, $now_page, $total, $offset);
 
 
         $data = array(
-            'userName'=> $_SESSION['username'],
+            'userName' => $_SESSION['username'],
             'from' => $from,
             'to' => $to,
             'log' => $result,
@@ -60,17 +61,18 @@ class DefaultController extends AbstractController
     /**
      * @Route("/ajax/memo", name="ajax_top", methods="get")
      */
-    public function updateMemo(Request $request){
+    public function updateMemo(Request $request)
+    {
         $db = new Db();
         $memo = $request->query->get('memo');
         $id = $request->query->get('id');
 
-        $authentication = $db->updateMemo($id,$memo);
-        if(!$authentication){
+        $authentication = $db->updateMemo($id, $memo);
+        if (!$authentication) {
             $data = array(
                 'message' => 'error'
             );
-        }else{
+        } else {
             $data = array(
                 'message' => 'ok'
             );
@@ -84,38 +86,39 @@ class DefaultController extends AbstractController
     /**
      * @Route("/top/search", name="top_search", methods="get")
      */
-    public function search(Request $request){
+    public function search(Request $request)
+    {
         $session = New Session;
         $db = New Db();
-        $api= New Api();
+        $api = New Api();
         $session->require_logined_session();
         //$now_pageは現在のページ
         $now_page = 1;
         //表示件数
         $kensuDefault = intval($request->query->get('kensuDef'));
         $page = $request->query->get('page');
-        $api_name =  $request->query->get('api_name');
+        $api_name = $request->query->get('api_name');
         $protocol = $request->query->get('protocol');
         $remote_ip = $request->query->get('remote_ip');
         $account_id = $request->query->get('account_id');
         $result_code = $request->query->get('result_code');
-        if(!is_null($page)){
+        if (!is_null($page)) {
             $now_page = intval($page);
         }
         //検索結果件数を取得
-        $searchResultAll = intval($db->searchColumn($api_name,$protocol,$remote_ip,$account_id,$result_code));
+        $searchResultAll = intval($db->searchColumn($api_name, $protocol, $remote_ip, $account_id, $result_code));
         //ページ数
-        $total_page = $api->paging($kensuDefault,$searchResultAll);
-        $offset = $api->offset($kensuDefault,$now_page);
-        $from = $api->from($searchResultAll,$offset);
-        $to = $api->to($kensuDefault,$now_page,$searchResultAll);
-        $result = $api->searchResult($kensuDefault,$now_page,$searchResultAll,$offset,$api_name, $protocol, $remote_ip, $account_id, $result_code);
+        $total_page = $api->paging($kensuDefault, $searchResultAll);
+        $offset = $api->offset($kensuDefault, $now_page);
+        $from = $api->from($searchResultAll, $offset);
+        $to = $api->to($kensuDefault, $now_page, $searchResultAll);
+        $result = $api->searchResult($kensuDefault, $now_page, $searchResultAll, $offset, $api_name, $protocol, $remote_ip, $account_id, $result_code);
 
         $data = array(
-            'userName'=> $_SESSION['username'],
+            'userName' => $_SESSION['username'],
             'from' => $from,
             'to' => $to,
-            'api_name' =>$api_name,
+            'api_name' => $api_name,
             'protocol' => $protocol,
             'remote_ip' => $remote_ip,
             'account_id' => $account_id,
@@ -128,5 +131,4 @@ class DefaultController extends AbstractController
         );
         return $this->render('default/Search.html', $data);
     }
-
 }

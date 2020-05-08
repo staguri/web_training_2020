@@ -17,7 +17,7 @@ class Session
         if (isset($_SESSION['username'])) {
             header('Location: /top');
             exit;
-        }else{
+        } else {
             $_SESSION = array();
         }
     }
