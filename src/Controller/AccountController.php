@@ -19,8 +19,15 @@ class AccountController extends AbstractController
      */
     public function createAccount(Request $request)
     {
+        $session = new Session();
+        $session->require_unlogined_session();
         $userInfo = $request->query->get('userInfo');
-        return $this->render('account/create.html', ['message' => $userInfo]);
+        $token = $session->generate_token();
+        $data = array(
+            'userInfo' => $userInfo,
+            'token' => $token
+        );
+        return $this->render('account/create.html', $data);
     }
 
     /**
@@ -29,8 +36,13 @@ class AccountController extends AbstractController
     public function verification(Request $request)
     {
         $db = new Db();
+        $session = new Session();
         $user = $request->request->get('username');
         $pass = $request->request->get('passwd');
+        $token = $request->request->get('token');
+        if($session->validate_token($token)){
+            return $this->redirectToRoute("account_create");
+        }
         $userInfoResult = $db->searchUser($user);
         if ($userInfoResult > 0) {
             return $this->redirectToRoute("account_create", [
@@ -57,22 +69,28 @@ class AccountController extends AbstractController
         $user = $request->request->get('name');
         $pass = $request->request->get('pass');
         $token = $request->request->get('token');
-        $userInfo = $db->getUserData($user);
-        $authentication = $api->getUserData($pass, $userInfo[0]['password']);
-
         if ($session->validate_token($token)) {
-            if (!$authentication) {
-                http_response_code(403);
+            $userInfo = $db->getUserData($user);
+            if(empty($userInfo)) {
                 $data = array(
-                    'message' => 'error'
+                    'message' => 'そのようなユーザ名は存在しません'
                 );
-            } else {
-                session_regenerate_id(true);
-                $_SESSION['username'] = $user;
-                $data = array(
-                    'message' => 'ok',
-                );
+            }else {
+                $authentication = $api->getUserData($pass, $userInfo[0]['password']);
+                if (!$authentication) {
+                    http_response_code(403);
+                    $data = array(
+                        'message' => 'error'
+                    );
+                } else {
+                    session_regenerate_id(true);
+                    $_SESSION['username'] = $user;
+                    $data = array(
+                        'message' => 'ok',
+                    );
+                }
             }
+
         } else {
             $data = array(
                 'message' => 'CSRFトークンエラー'
